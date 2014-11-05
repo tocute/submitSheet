@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jQuery mobile Sample</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+        
+        <link rel="stylesheet" href="css/jquery.mobile-1.4.4.min.css">
+        <link rel="stylesheet" href="css/custom.css">
+        
+  		<script src="js/jquery-2.1.1.min.js"></script>
+  		<script src="js/main.js"></script>
+        <script src="js/jquery.mobile-1.4.4.min.js"></script>
+    </head>
+
+    <body>
+        <div data-role="page" id="page-1">
+            <div data-role="header">
+                <h1>統計票數</h1>
+            </div>
+
+            <div data-role="content">
+                <form>
+                   <div data-role="fieldcontain">
+              
+                            <label for="house_id">投票所編號</label>    
+                            <input type="number" name="house_id" id="house_id" placeholder="投票所編號"/>
+
+                            <label for="pw_id">密碼</label>    
+                            <input type="password" name="pw_id" id="pw_id" placeholder="密碼"/>
+
+                            <label for="white_ticket_id">白色分數</label>    
+                            <input type="number" name="white_ticket_id" id="white_ticket_id"  placeholder="白色分數"/>
+
+                            <label for="blue_ticket_id">藍色分數</label>    
+                            <input type="number" name="blue_ticket_id" id="blue_ticket_id"  placeholder="藍色分數"/>
+                
+                    </div>
+                </form>
+                <button id="btn_submit">更新</button> 
+            </div>
+
+            <div data-role="footer" data-position="fixed">
+                <h1 >這是尾巴喔</h1>
+            </div>
+        </div>
+    </body>
+</html>
