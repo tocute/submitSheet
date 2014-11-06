@@ -1,26 +1,53 @@
 $(document).on("mobileinit",function(e)
 {
-
+	
 });
 
 $(document).on("pageinit","#page-1",function(e)
 {
-	var SHEET_DOC_URL = "https://docs.google.com/forms/d/1W7qUQzgpdtVXQTwYLpqgbMx8gBWfWB_XVrZpi9P7yOw/formResponse";
+	Parse.initialize("766GgtZAVp0Z7GB6kZX3ahMHDbAgir1N4GKQnlDA", "cBJFTgN2y7YWDB1VQYD9l6h06wcWm1zeTsnIWn6N");
 	
-	var SHEET_ITEM_HOUSE    = "entry.1944352540";
-	var SHEET_ITEM_PASSWORD = "entry.370169595";
-	var SHEET_ITEM_BLUE     = "entry.355362974";
-	var SHEET_ITEM_WHITE    = "entry.695483925";
+	var VoteHouseId = null;
+	var VoteHousePassword = null;
 
-	var checkPasswordValid = function (id, pw)
+	var checkPasswordValid = function (id, pw, white_ticket_num, blue_ticket_num)
 	{
-		if(id != pw)
+		if(VoteHouseId != id || VoteHousePassword != pw)
+			VoteHousePassword = null;
+
+		if(VoteHousePassword == null)
 		{
-			$("#pw_id").val("");
-			return false;
-		}	
+			var VoteHouseObject = Parse.Object.extend("VoteHouseObject");
+			var query = new Parse.Query(VoteHouseObject);
+			query.equalTo("VoteHouseId", id);
+			query.find({
+  				success: function(results) 
+  				{
+   					 if(results.length >= 1)
+   					 {
+						object = results[0];
+      					var temp_pw = object.get('secretPassword');
+      					if(temp_pw == pw)
+      					{
+      						VoteHousePassword = temp_pw;
+      						VoteHouseId = object.get('VoteHouseId');
+      						searchObjectByHouseID(VoteHouseId,white_ticket_num,blue_ticket_num);
+      					}
+      					else
+      					{
+      						alert("密碼錯誤  請再次確認投票所編號與密碼");
+      						$("#pw_id").val("");
+      					}
+   					 }	
+  				},
+  				error: function(error) 
+  				{
+    				alert("網路不穩  傳送失敗");
+  				}
+			});
+		}
 		else
-			return true;
+			searchObjectByHouseID(VoteHouseId,white_ticket_num,blue_ticket_num);	
 	}
 	
 	var checkFieldFormat = function ()
@@ -46,6 +73,51 @@ $(document).on("pageinit","#page-1",function(e)
 		return is_valid;
 	}
 
+ 	var submitInfo = function(object_ID,house_id, white_ticket_num, blue_ticket_num)
+ 	{
+ 		var TicketInfoObject = Parse.Object.extend("TicketInfoObject");
+		var ticketsInfo = new TicketInfoObject();
+	    ticketsInfo.set("id", object_ID);
+	    ticketsInfo.set("house_id", house_id);
+		ticketsInfo.set("white_ticket_num", white_ticket_num);
+	    ticketsInfo.set("blue_ticket_num", blue_ticket_num);
+				    
+		ticketsInfo.save(null, {
+		    success: function(object) 
+		    {
+		      	showPop("已成功傳送更新資料");
+		    },
+		    error: function(model, error) 
+		    {
+		        alert("網路不穩  傳送失敗");
+		    }
+		});
+ 	}
+
+    var searchObjectByHouseID = function(house_id, white_ticket_num, blue_ticket_num)
+    {
+		var TicketInfoObject = Parse.Object.extend("TicketInfoObject");
+		var query = new Parse.Query(TicketInfoObject);
+		query.equalTo("house_id", house_id);
+		query.find({
+	  		success: function(results) 
+  			{
+  				var object_ID = null;
+   				if(results.length >= 1)
+   				{
+					var object = results[0];
+      				object_ID = object.id	
+   				}	
+   				submitInfo(object_ID,house_id, white_ticket_num, blue_ticket_num);
+  			},
+  			error: function(error) 
+  			{
+   				alert("網路不穩  傳送失敗");
+   				return false;
+  			}
+		});
+    }
+
 	var onBtnSubmitClick = function (e)
 	{
 		var house_id = $("#house_id").val();
@@ -58,14 +130,7 @@ $(document).on("pageinit","#page-1",function(e)
 		{
 			if(checkFieldFormat())
 			{
-				if(checkPasswordValid(house_id,password))  //edit2=2_ABaOnueH6H1RPV-5YVsgyXMOEu_8Aw5pq1Q2CjNnCY3VJJs2n5n5y07gnQ&
-				{
-					$.getScript(SHEET_DOC_URL+"?"+SHEET_ITEM_HOUSE+"="+house_id+"&"+SHEET_ITEM_PASSWORD+"="+password+"&"+SHEET_ITEM_WHITE+"="+white_ticket_num+"&"+SHEET_ITEM_BLUE+"="+blue_ticket_num+"&submit=Submit");
-				}
-				else
-				{
-					alert("密碼錯誤  請再次確認投票所編號與密碼");
-				}	
+				checkPasswordValid(house_id,password,white_ticket_num, blue_ticket_num);
 			}
 			else
 			{
@@ -77,6 +142,87 @@ $(document).on("pageinit","#page-1",function(e)
 			alert("有欄位尚未填寫");
 		}
 	}
+	
+	var showPop = function (msg)
+	{
+		$("#popupText").html(msg);
+		$("#popupBasic").popup( "open" );
+		setTimeout(function() {
+     		$( "#popupBasic" ).popup( "close" );
+		}, 800);
+	}
 
-	$("#btn_submit").on("click",onBtnSubmitClick);
+	var onBtnCreateClick = function (e)
+	{
+		var VoteHouseObject = Parse.Object.extend("TicketInfoObject");
+		for(var i = 1;i<1640;i++)
+		{
+			var info = new VoteHouseObject();
+		    info.set("house_id", ""+i);
+		    var temp1 = parseInt(Math.random()*10000);
+		    var temp2 = parseInt(Math.random()*10000);
+
+		    info.set("white_ticket_num", ""+temp1);
+		    info.set("blue_ticket_num", ""+temp2);
+		    
+			info.save(null, {
+		    	success: function(object) 
+			    {
+
+			    },
+		        error: function(model, error) 
+				{
+
+				}
+			});
+		}
+
+	}
+	/*var onBtnCreateClick = function (e)
+	{
+		var VoteHouseObject = Parse.Object.extend("VoteHouseObject");
+		for(var i = 0;i<1635;i++)
+		{
+			var info = new VoteHouseObject();
+		    info.set("VoteHouseId", ""+i);
+		    info.set("secretPassword", ""+i*2);
+				    
+			info.save(null, {
+		    	success: function(object) 
+			    {
+
+			    },
+		        error: function(model, error) 
+				{
+
+				}
+			});
+		}
+
+	}*/
+
+	/*var onBtnRoadman = function()
+	{
+		var TicketInfoObject = Parse.Object.extend("TicketInfoObject");
+		var query = new Parse.Query(TicketInfoObject);
+		//query.equalTo("house_id", "10");
+		query.greaterThan("house_id", "10");
+		query.lessThanOrEqualTo("house_id", "20");
+		query.find({
+	  		success: function(results) 
+  			{
+  				alert(results[0]);
+  				results[0].id
+  			},
+  			error: function(error) 
+  			{
+   				alert("網路不穩  傳送失敗");
+   				return false;
+  			}
+		});
+	}*/
+
+	$("#btn_submit").on("click",onBtnCreateClick);
+	//$("#btn_submit").on("click",onBtnRoadman);
+
 });

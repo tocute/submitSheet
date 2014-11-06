@@ -11,6 +11,7 @@
   		<script src="js/jquery-2.1.1.min.js"></script>
   		<script src="js/main.js"></script>
         <script src="js/jquery.mobile-1.4.4.min.js"></script>
+        <script src="js/parse-1.3.1.min.js"></script>
     </head>
 
     <body>
@@ -20,28 +21,31 @@
             </div>
 
             <div data-role="content">
-                <form>
-                   <div data-role="fieldcontain">
-              
+                <div data-role="fieldcontain">
+                   <form>
+                        <fieldset>
                             <label for="house_id">投票所編號</label>    
-                            <input type="number" name="house_id" id="house_id" placeholder="投票所編號"/>
+                            <input type="number" name="house_id" id="house_id" placeholder="vote house id"/>
 
                             <label for="pw_id">密碼</label>    
-                            <input type="password" name="pw_id" id="pw_id" placeholder="密碼"/>
+                            <input type="password" name="pw_id" id="pw_id" placeholder="password"/>
 
                             <label for="white_ticket_id">白色分數</label>    
-                            <input type="number" name="white_ticket_id" id="white_ticket_id"  placeholder="白色分數"/>
+                            <input type="number" name="white_ticket_id" id="white_ticket_id"  placeholder="white tickets"/>
 
                             <label for="blue_ticket_id">藍色分數</label>    
-                            <input type="number" name="blue_ticket_id" id="blue_ticket_id"  placeholder="藍色分數"/>
-                
-                    </div>
-                </form>
+                            <input type="number" name="blue_ticket_id" id="blue_ticket_id"  placeholder="blue tickets"/>
+                        </fieldset>
+                    </form>
+                </div>
+                <div data-role="popup" id="popupBasic">
+                     <p id="popupText"><p>
+                </div>
                 <button id="btn_submit">更新</button> 
             </div>
 
             <div data-role="footer" data-position="fixed">
-                <h1 >這是尾巴喔</h1>
+                <h1>白色力量製作團隊</h1>
             </div>
         </div>
     </body>
