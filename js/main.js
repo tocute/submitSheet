@@ -152,7 +152,7 @@ $(document).on("pageinit","#page-1",function(e)
 		}, 800);
 	}
 
-	var onBtnCreateClick = function (e)
+	/*var onBtnCreateClick = function (e)
 	{
 		var VoteHouseObject = Parse.Object.extend("TicketInfoObject");
 		for(var i = 1;i<1640;i++)
@@ -176,8 +176,8 @@ $(document).on("pageinit","#page-1",function(e)
 				}
 			});
 		}
-
-	}
+	}*/
+	
 	/*var onBtnCreateClick = function (e)
 	{
 		var VoteHouseObject = Parse.Object.extend("VoteHouseObject");
@@ -222,7 +222,7 @@ $(document).on("pageinit","#page-1",function(e)
 		});
 	}*/
 
-	$("#btn_submit").on("click",onBtnCreateClick);
+	$("#btn_submit").on("click",onBtnSubmitClick);
 	//$("#btn_submit").on("click",onBtnRoadman);
 
 });
