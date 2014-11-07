@@ -297,5 +297,5 @@ $(document).on("pageinit","#page-1",function(e)
         	showAlert("更新成功");
     }
 
-	$("#btn_submit").on("click",onCreateTable);
+	$("#btn_submit").on("click",onBtnSubmit2Click);
 });
