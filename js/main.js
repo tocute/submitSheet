@@ -5,66 +5,28 @@ $(document).on("mobileinit",function(e)
 
 $(document).on("pageinit","#page-1",function(e)
 {
-	Parse.initialize("766GgtZAVp0Z7GB6kZX3ahMHDbAgir1N4GKQnlDA", "cBJFTgN2y7YWDB1VQYD9l6h06wcWm1zeTsnIWn6N");
-	
-	var VoteHouseId = null;
-	var VoteHousePassword = null;
+	Parse.initialize("CPFQXuoHErkxiN8b3uDFuGuGBnZbLen9jglvAB4p", "qvHqLCDitrqkwAL3bSbMfbdcYlUY9wlfVJZmom3S");	
+    $('#popupDialog').css({'width':$(window).width()*0.8});
 
-	var checkPasswordValid = function (id, pw, white_ticket_num, blue_ticket_num)
-	{
-		if(VoteHouseId != id || VoteHousePassword != pw)
-			VoteHousePassword = null;
-
-		if(VoteHousePassword == null)
-		{
-			var VoteHouseObject = Parse.Object.extend("VoteHouseObject");
-			var query = new Parse.Query(VoteHouseObject);
-			query.equalTo("VoteHouseId", id);
-			query.find({
-  				success: function(results) 
-  				{
-   					 if(results.length >= 1)
-   					 {
-						object = results[0];
-      					var temp_pw = object.get('secretPassword');
-      					if(temp_pw == pw)
-      					{
-      						VoteHousePassword = temp_pw;
-      						VoteHouseId = object.get('VoteHouseId');
-      						searchObjectByHouseID(VoteHouseId,white_ticket_num,blue_ticket_num);
-      					}
-      					else
-      					{
-      						alert("密碼錯誤  請再次確認投票所編號與密碼");
-      						$("#pw_id").val("");
-      					}
-   					 }	
-  				},
-  				error: function(error) 
-  				{
-    				alert("網路不穩  傳送失敗");
-  				}
-			});
-		}
-		else
-			searchObjectByHouseID(VoteHouseId,white_ticket_num,blue_ticket_num);	
-	}
-	
 	var checkFieldFormat = function ()
 	{
 		var is_valid = true;
-
-		if(!$.isNumeric($("#house_id").val()))
+		var check_num = $("#house_id").val();
+		if(!$.isNumeric(check_num) || check_num <= 0 || parseInt(check_num) != check_num)
 		{
 			$("#house_id").val("");
 			is_valid = false;
 		}	
-		if(!$.isNumeric($("#white_ticket_id").val()))
+		
+		check_num = $("#white_ticket_id").val();
+		if(!$.isNumeric(check_num) || check_num < 0 || parseInt(check_num) != check_num)
 		{
 			$("#white_ticket_id").val("");
 			is_valid = false;
-		}	
-		if(!$.isNumeric($("#blue_ticket_id").val()))
+		}
+
+		check_num = $("#blue_ticket_id").val();
+		if(!$.isNumeric(check_num) || check_num < 0 || parseInt(check_num) != check_num)
 		{
 			$("#blue_ticket_id").val("");
 			is_valid = false;
@@ -73,16 +35,12 @@ $(document).on("pageinit","#page-1",function(e)
 		return is_valid;
 	}
 
- 	var submitInfo = function(object_ID,house_id, white_ticket_num, blue_ticket_num)
+ 	/*var submitInfo = function(object,house_id, white_ticket_num, blue_ticket_num)
  	{
- 		var TicketInfoObject = Parse.Object.extend("TicketInfoObject");
-		var ticketsInfo = new TicketInfoObject();
-	    ticketsInfo.set("id", object_ID);
-	    ticketsInfo.set("house_id", house_id);
-		ticketsInfo.set("white_ticket_num", white_ticket_num);
-	    ticketsInfo.set("blue_ticket_num", blue_ticket_num);
+		object.set("whiteTicketNum", white_ticket_num);
+	    object.set("blueTicketNum", blue_ticket_num);
 				    
-		ticketsInfo.save(null, {
+		object.save(null, {
 		    success: function(object) 
 		    {
 		      	showPop("已成功傳送更新資料");
@@ -94,29 +52,35 @@ $(document).on("pageinit","#page-1",function(e)
 		});
  	}
 
-    var searchObjectByHouseID = function(house_id, white_ticket_num, blue_ticket_num)
-    {
+	var checkPasswordValid = function (id, pw, white_ticket_num, blue_ticket_num)
+	{
 		var TicketInfoObject = Parse.Object.extend("TicketInfoObject");
 		var query = new Parse.Query(TicketInfoObject);
-		query.equalTo("house_id", house_id);
+		query.equalTo("voteHouseId", id);
 		query.find({
-	  		success: function(results) 
-  			{
-  				var object_ID = null;
-   				if(results.length >= 1)
+  			success: function(results) 
+ 			{
+   			    if(results.length >= 1)
    				{
-					var object = results[0];
-      				object_ID = object.id	
+					object = results[0];
+      				var temp_pw = object.get('secretPassword');
+      				if(temp_pw == pw)
+      				{
+      					submitInfo(object,id,white_ticket_num,blue_ticket_num);
+      				}
+      				else
+      				{
+      					alert("密碼錯誤  請再次確認投票所編號與密碼");
+      					$("#pw_id").val("");
+      				}
    				}	
-   				submitInfo(object_ID,house_id, white_ticket_num, blue_ticket_num);
   			},
   			error: function(error) 
   			{
-   				alert("網路不穩  傳送失敗");
-   				return false;
+    			alert("網路不穩  傳送失敗");
   			}
-		});
-    }
+		});	
+	}
 
 	var onBtnSubmitClick = function (e)
 	{
@@ -125,7 +89,6 @@ $(document).on("pageinit","#page-1",function(e)
 		var white_ticket_num = $("#white_ticket_id").val();
 		var blue_ticket_num = $("#blue_ticket_id").val();
 		
-
 		if(house_id != undefined && password != undefined && white_ticket_num != undefined && blue_ticket_num != undefined)
 		{
 			if(checkFieldFormat())
@@ -141,88 +104,198 @@ $(document).on("pageinit","#page-1",function(e)
 		{
 			alert("有欄位尚未填寫");
 		}
-	}
+	}*/
 	
+	var onBtnSubmit2Click = function (e)
+	{
+		var house_id = $("#house_id").val();
+		var password = $("#pw_id").val();
+		var white_ticket_num = $("#white_ticket_id").val();
+		var blue_ticket_num = $("#blue_ticket_id").val();
+		
+		if(house_id != undefined && password != undefined && white_ticket_num != undefined && blue_ticket_num != undefined && house_id != "" && password != "" && white_ticket_num != "" && blue_ticket_num != "")
+		{
+			if(checkFieldFormat())
+			{
+				Parse.Cloud.run("UpdateTicket", 
+					{ voteHouseId: house_id, secretPassword:password, ticketNumSeven:white_ticket_num, ticketNumSix:blue_ticket_num}, 
+					{
+	  					success: function(msg) 
+	  					{
+    						// result is 'Hello world!'
+    						showPop(msg+" \n 白："+white_ticket_num +" \n 藍："+blue_ticket_num);
+    					},
+  						error: function(error) 
+  						{
+  							/*{
+								"code":141,
+								"message":"密碼錯誤  請再次確認投票所編號與密碼"
+							}*/
+  							showAlert(error.message);
+  						}
+					});
+			}
+			else
+			{
+				showAlert("格式錯誤");
+			}
+		}	
+		else	
+		{
+			showAlert("有欄位尚未填寫");
+		}
+	}
+
 	var showPop = function (msg)
 	{
-		$("#popupText").html(msg);
+		$("#popupBasic #popupText").html(msg);
 		$("#popupBasic").popup( "open" );
 		setTimeout(function() {
      		$( "#popupBasic" ).popup( "close" );
-		}, 800);
+		}, 1200);
 	}
 
-	/*var onBtnCreateClick = function (e)
+	var showAlert = function (msg)
+	{
+		$("#popupDialog #popupText").html(msg);
+		$("#popupDialog").popup( "open" );
+	}
+
+	// Parse.com 30 request/sec
+	function sleep(milliseconds) 
+	{
+  		var start = new Date().getTime();
+  		for (var i = 0; i < 1e7; i++) 
+  		{
+    		if ((new Date().getTime() - start) > milliseconds)
+    		{
+      			break;
+    		}
+  		}
+	}
+
+	var onCreateTable = function (e)
 	{
 		var VoteHouseObject = Parse.Object.extend("TicketInfoObject");
-		for(var i = 1;i<1640;i++)
+		for(var i = 1;i<=1534;i++)
 		{
 			var info = new VoteHouseObject();
-		    info.set("house_id", ""+i);
+		    info.set("voteHouseId", ""+i);
+		    info.set("secretPassword", ""+i*2);
 		    var temp1 = parseInt(Math.random()*10000);
 		    var temp2 = parseInt(Math.random()*10000);
 
-		    info.set("white_ticket_num", ""+temp1);
-		    info.set("blue_ticket_num", ""+temp2);
-		    
+		    info.set("ticketNumSeven", ""+temp1);
+		    info.set("ticketNumSix", ""+temp2);
+		    var district_id = 0;
+		    if(i >= 1 && i <= 139)
+		    {
+		    	district_id = 6301200;  //1北投
+		    }
+		    else if(i >= 140 && i <= 302)
+		    {
+		    	district_id = 6301100;  //2士林
+		    }
+		    else if(i >= 303 && i <= 449)
+		    {
+		    	district_id = 6301000;  //3內湖
+		    }
+		    else if(i >= 450 && i <= 521)
+		    {
+		    	district_id = 6300900;  //4南港
+		    }
+		    else if(i >= 522 && i <= 636)
+		    {
+		    	district_id = 6300100;  //5松山
+		    }
+		    else if(i >= 637 && i <= 777)
+		    {
+		    	district_id = 6300200; //6信義
+		    }
+		    else if(i >= 778 && i <= 906)
+		    {
+		    	district_id = 6300400; //7中山
+		    }
+		    else if(i >= 907 && i <= 983)
+		    {
+		    	district_id = 6300600;  //8大同
+		    }
+		    else if(i >= 984 && i <= 1074)
+		    {
+		    	district_id = 6300500;  //9中正
+		    }
+		    else if(i >= 1075 && i <= 1184)
+		    {
+		    	district_id = 6300700;  //10萬華
+		    }
+		    else if(i >= 1185 && i <= 1372)
+		    {
+		    	district_id = 6300300;  //11大安
+		    }
+		    else if(i >= 1373 && i <= 1534)
+		    {
+		    	district_id = 6300800;  //12文山
+		    }
+		    info.set("districtId", ""+district_id);
+
 			info.save(null, {
-		    	success: function(object) 
-			    {
-
-			    },
-		        error: function(model, error) 
-				{
-
-				}
-			});
+                            success: function(obj) {},
+                            error: function(model, error) {}
+                        });
+			sleep(100);
 		}
-	}*/
-	
-	/*var onBtnCreateClick = function (e)
-	{
-		var VoteHouseObject = Parse.Object.extend("VoteHouseObject");
-		for(var i = 0;i<1635;i++)
-		{
-			var info = new VoteHouseObject();
-		    info.set("VoteHouseId", ""+i);
-		    info.set("secretPassword", ""+i*2);
-				    
-			info.save(null, {
-		    	success: function(object) 
-			    {
+	}
 
-			    },
-		        error: function(model, error) 
-				{
+	var ResetTable = function(msg) 
+    {
+    	var TicketInfoObject = Parse.Object.extend("TicketInfoObject");	
+        var query = new Parse.Query(TicketInfoObject);
+        var is_fail = false;
+        for(var i = 1; i<=2; i++)
+        {
+            if(is_fail)
+                break;
+            query.equalTo("voteHouseId", ""+i);
+            query.find({    
+                success: function(results) 
+                {
+                    if(results.length > 0)
+                    {
+                        var found_object = results[0];
+                        var temp1 = parseInt(Math.random()*10000);
+                        var temp2 = parseInt(Math.random()*10000);
+                        /*if(msg == undefined)
+                        {
+                            temp1 = 0;
+                            temp2 = 0;
+                        }*/
 
-				}
-			});
-		}
+                        found_object.set("ticketNumSeven", ""+temp1);
+                        found_object.set("ticketNumSix", ""+temp2);
 
-	}*/
+                        found_object.save(null, {
+                            success: function(obj) 
+                            {
+                            },
+                            error: function(model, error) 
+                            {
+                                is_fail = true;
+                            }
+                        });
+                    }
+                },
+                error: function() 
+                {
+                    is_fail = true;
+                }
+            });
+            sleep(100);
+        }
+        if(is_fail)
+        	showAlert("更新失敗");
+        else
+        	showAlert("更新成功");
+    }
 
-	/*var onBtnRoadman = function()
-	{
-		var TicketInfoObject = Parse.Object.extend("TicketInfoObject");
-		var query = new Parse.Query(TicketInfoObject);
-		//query.equalTo("house_id", "10");
-		query.greaterThan("house_id", "10");
-		query.lessThanOrEqualTo("house_id", "20");
-		query.find({
-	  		success: function(results) 
-  			{
-  				alert(results[0]);
-  				results[0].id
-  			},
-  			error: function(error) 
-  			{
-   				alert("網路不穩  傳送失敗");
-   				return false;
-  			}
-		});
-	}*/
-
-	$("#btn_submit").on("click",onBtnSubmitClick);
-	//$("#btn_submit").on("click",onBtnRoadman);
-
+	$("#btn_submit").on("click",onCreateTable);
 });
