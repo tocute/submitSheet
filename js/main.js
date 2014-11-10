@@ -34,79 +34,8 @@ $(document).on("pageinit","#page-1",function(e)
 
 		return is_valid;
 	}
-
- 	/*var submitInfo = function(object,house_id, white_ticket_num, blue_ticket_num)
- 	{
-		object.set("whiteTicketNum", white_ticket_num);
-	    object.set("blueTicketNum", blue_ticket_num);
-				    
-		object.save(null, {
-		    success: function(object) 
-		    {
-		      	showPop("已成功傳送更新資料");
-		    },
-		    error: function(model, error) 
-		    {
-		        alert("網路不穩  傳送失敗");
-		    }
-		});
- 	}
-
-	var checkPasswordValid = function (id, pw, white_ticket_num, blue_ticket_num)
-	{
-		var TicketInfoObject = Parse.Object.extend("TicketInfoObject");
-		var query = new Parse.Query(TicketInfoObject);
-		query.equalTo("voteHouseId", id);
-		query.find({
-  			success: function(results) 
- 			{
-   			    if(results.length >= 1)
-   				{
-					object = results[0];
-      				var temp_pw = object.get('secretPassword');
-      				if(temp_pw == pw)
-      				{
-      					submitInfo(object,id,white_ticket_num,blue_ticket_num);
-      				}
-      				else
-      				{
-      					alert("密碼錯誤  請再次確認投票所編號與密碼");
-      					$("#pw_id").val("");
-      				}
-   				}	
-  			},
-  			error: function(error) 
-  			{
-    			alert("網路不穩  傳送失敗");
-  			}
-		});	
-	}
-
-	var onBtnSubmitClick = function (e)
-	{
-		var house_id = $("#house_id").val();
-		var password = $("#pw_id").val();
-		var white_ticket_num = $("#white_ticket_id").val();
-		var blue_ticket_num = $("#blue_ticket_id").val();
-		
-		if(house_id != undefined && password != undefined && white_ticket_num != undefined && blue_ticket_num != undefined)
-		{
-			if(checkFieldFormat())
-			{
-				checkPasswordValid(house_id,password,white_ticket_num, blue_ticket_num);
-			}
-			else
-			{
-				alert("格式錯誤");
-			}
-		}	
-		else	
-		{
-			alert("有欄位尚未填寫");
-		}
-	}*/
 	
-	var onBtnSubmit2Click = function (e)
+	var onBtnSubmitClick = function (e)
 	{
 		var house_id = $("#house_id").val();
 		var password = $("#pw_id").val();
@@ -118,7 +47,7 @@ $(document).on("pageinit","#page-1",function(e)
 			if(checkFieldFormat())
 			{
 				Parse.Cloud.run("UpdateTicket", 
-					{ voteHouseId: house_id, secretPassword:password, ticketNumSeven:white_ticket_num, ticketNumSix:blue_ticket_num}, 
+					{ voteHouseId: house_id, secretPassword:password, candidate7:white_ticket_num, candidate6:blue_ticket_num}, 
 					{
 	  					success: function(msg) 
 	  					{
@@ -182,11 +111,11 @@ $(document).on("pageinit","#page-1",function(e)
 			var info = new VoteHouseObject();
 		    info.set("voteHouseId", ""+i);
 		    info.set("secretPassword", ""+i*2);
-		    var temp1 = parseInt(Math.random()*10000);
-		    var temp2 = parseInt(Math.random()*10000);
+		    var temp1 = parseInt(Math.random()*1000);
+		    var temp2 = parseInt(Math.random()*1000);
 
-		    info.set("ticketNumSeven", ""+temp1);
-		    info.set("ticketNumSix", ""+temp2);
+		    info.set("candidate7", ""+temp1);
+		    info.set("candidate6", ""+temp2);
 		    var district_id = 0;
 		    if(i >= 1 && i <= 139)
 		    {
@@ -270,8 +199,8 @@ $(document).on("pageinit","#page-1",function(e)
                             temp2 = 0;
                         }*/
 
-                        found_object.set("ticketNumSeven", ""+temp1);
-                        found_object.set("ticketNumSix", ""+temp2);
+                        found_object.set("candidate7", ""+temp1);
+                        found_object.set("candidate6", ""+temp2);
 
                         found_object.save(null, {
                             success: function(obj) 
@@ -297,5 +226,5 @@ $(document).on("pageinit","#page-1",function(e)
         	showAlert("更新成功");
     }
 
-	$("#btn_submit").on("click",onBtnSubmit2Click);
+	$("#btn_submit").on("click",onBtnSubmitClick);
 });
