@@ -39,8 +39,8 @@ $(document).on("pageinit","#page-1",function(e)
 	{
 		var house_id = $("#house_id").val();
 		var password = $("#pw_id").val();
-		var white_ticket_num = $("#white_ticket_id").val();
-		var blue_ticket_num = $("#blue_ticket_id").val();
+		var white_ticket_num = parseInt($("#white_ticket_id").val());
+		var blue_ticket_num = parseInt($("#blue_ticket_id").val());
 		
 		if(house_id != undefined && password != undefined && white_ticket_num != undefined && blue_ticket_num != undefined && house_id != "" && password != "" && white_ticket_num != "" && blue_ticket_num != "")
 		{
@@ -114,8 +114,8 @@ $(document).on("pageinit","#page-1",function(e)
 		    var temp1 = parseInt(Math.random()*1000);
 		    var temp2 = parseInt(Math.random()*1000);
 
-		    info.set("candidate7", ""+temp1);
-		    info.set("candidate6", ""+temp2);
+		    info.set("candidate7", temp1);
+		    info.set("candidate6", temp2);
 		    var district_id = 0;
 		    if(i >= 1 && i <= 139)
 		    {
@@ -199,8 +199,8 @@ $(document).on("pageinit","#page-1",function(e)
                             temp2 = 0;
                         }*/
 
-                        found_object.set("candidate7", ""+temp1);
-                        found_object.set("candidate6", ""+temp2);
+                        found_object.set("candidate7", temp1);
+                        found_object.set("candidate6", temp2);
 
                         found_object.save(null, {
                             success: function(obj) 
