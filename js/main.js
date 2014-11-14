@@ -46,6 +46,14 @@ $(document).on("pageinit","#page-1",function(e)
 		{
 			if(checkFieldFormat())
 			{
+				$.mobile.loading( 'show', {
+					text: 'loading',
+					textVisible: true,
+					theme: 'a',
+					html: ""
+				});
+				
+				$("#btn_submit").addClass("ui-disabled");
 				Parse.Cloud.run("UpdateTicket", 
 					{ voteHouseId: house_id, secretPassword:password, candidate7:white_ticket_num, candidate6:blue_ticket_num}, 
 					{
@@ -53,6 +61,8 @@ $(document).on("pageinit","#page-1",function(e)
 	  					{
     						// result is 'Hello world!'
     						showPop(msg+" \n 白："+white_ticket_num +" \n 藍："+blue_ticket_num);
+    						$.mobile.loading( 'hide' );
+    						$("#btn_submit").removeClass("ui-disabled");
     					},
   						error: function(error) 
   						{
@@ -61,6 +71,8 @@ $(document).on("pageinit","#page-1",function(e)
 								"message":"密碼錯誤  請再次確認投票所編號與密碼"
 							}*/
   							showAlert(error.message);
+  							$.mobile.loading( 'hide' );
+  							$("#btn_submit").removeClass("ui-disabled");
   						}
 					});
 			}
