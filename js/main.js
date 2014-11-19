@@ -37,7 +37,7 @@ $(document).on("pageinit","#page-1",function(e)
 	
 	var onBtnSubmitClick = function (e)
 	{
-		var house_id = $("#house_id").val();
+		var house_id = parseInt($("#house_id").val());
 		var password = $("#pw_id").val();
 		var white_ticket_num = parseInt($("#white_ticket_id").val());
 		var blue_ticket_num = parseInt($("#blue_ticket_id").val());

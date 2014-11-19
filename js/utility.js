@@ -4,7 +4,7 @@ var onCreateTable = function (e)
 		for(var i = 1;i<=1534;i++)
 		{
 			var info = new VoteHouseObject();
-		    info.set("voteHouseId", ""+i);
+		    info.set("voteHouseId", i);
 		    info.set("secretPassword", ""+i*2);
 		    var temp1 = parseInt(Math.random()*1000);
 		    var temp2 = parseInt(Math.random()*1000);
@@ -79,7 +79,7 @@ var onCreateTable = function (e)
         {
             if(is_fail)
                 break;
-            query.equalTo("voteHouseId", ""+i);
+            query.equalTo("voteHouseId", i);
             query.find({    
                 success: function(results) 
                 {
