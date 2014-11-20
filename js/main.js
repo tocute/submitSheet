@@ -42,7 +42,7 @@ $(document).on("pageinit","#page-1",function(e)
 		var white_ticket_num = parseInt($("#white_ticket_id").val());
 		var blue_ticket_num = parseInt($("#blue_ticket_id").val());
 		
-		if(house_id != undefined && password != undefined && white_ticket_num != undefined && blue_ticket_num != undefined && house_id != "" && password != "" && white_ticket_num != "" && blue_ticket_num != "")
+		if(house_id && password && white_ticket_num > -1 && blue_ticket_num > -1)
 		{
 			if(checkFieldFormat())
 			{
