@@ -2,18 +2,26 @@ $(document).on("pageinit","#page-2",function(e)
 {
 	Parse.initialize("CPFQXuoHErkxiN8b3uDFuGuGBnZbLen9jglvAB4p", "qvHqLCDitrqkwAL3bSbMfbdcYlUY9wlfVJZmom3S");	
     $('#popupDialog').css({'width':$(window).width()*0.8});
-
+    var mHouseID = 1;
+    var mCalTimer = null;
+    var mIsUpdateFail = false;
+	
 	var ResetTable = function(msg) 
     {
-    	var TicketInfoObject = Parse.Object.extend("TicketInfoObject");	
-        var query = new Parse.Query(TicketInfoObject);
-        var is_fail = false;
-        for(var i = 1; i<=1534; i++)
+      	$("#house_progress").val(0);
+       	$("#house_progress").slider("refresh");
+       	mHouseID = 1;
+       	mIsUpdateFail = false;
+
+        mCalTimer = setInterval(function() 
         {
-        	console.log("update : "+ i);
-            if(is_fail)
-                break;
-            query.equalTo("voteHouseId", i);
+        	console.log("Update : "+mHouseID);
+            $("#house_progress").val(mHouseID);
+            $("#house_progress").slider("refresh");
+
+    		var TicketInfoObject = Parse.Object.extend("TicketInfoObject");	
+       		var query = new Parse.Query(TicketInfoObject);
+			query.equalTo("voteHouseId", mHouseID);
             query.find({    
                 success: function(results) 
                 {
@@ -22,7 +30,7 @@ $(document).on("pageinit","#page-2",function(e)
                         var found_object = results[0];
                         var temp1 = 0;
                         var temp2 = 0;
-                        if(msg != null)
+                        if(msg == "update")
                         {
                             temp1 = parseInt(Math.random()*10000);
                             temp2 = parseInt(Math.random()*10000);
@@ -37,22 +45,27 @@ $(document).on("pageinit","#page-2",function(e)
                             },
                             error: function(model, error) 
                             {
-                                is_fail = true;
+                                mIsUpdateFail = true;
                             }
                         });
                     }
                 },
                 error: function() 
                 {
-                    is_fail = true;
+                    mIsUpdateFail = true;
                 }
             });
-            sleep(150);
-        }
-        if(is_fail)
-        	showAlert("更新失敗");
-        else
-        	showAlert("更新成功");
+
+            mHouseID++;
+            if(mHouseID > 1534)
+            {
+            	clearInterval(mCalTimer);
+            	if(mIsUpdateFail)
+        			showAlert("更新失敗");
+       			else
+        			showAlert("更新成功");
+            }	
+        }, 150);
     };
 
 	var onBtnUpdateClick = function (e)
