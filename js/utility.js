@@ -1,3 +1,94 @@
+$(document).on("pageinit","#page-2",function(e)
+{
+	Parse.initialize("CPFQXuoHErkxiN8b3uDFuGuGBnZbLen9jglvAB4p", "qvHqLCDitrqkwAL3bSbMfbdcYlUY9wlfVJZmom3S");	
+    $('#popupDialog').css({'width':$(window).width()*0.8});
+
+	var ResetTable = function(msg) 
+    {
+    	var TicketInfoObject = Parse.Object.extend("TicketInfoObject");	
+        var query = new Parse.Query(TicketInfoObject);
+        var is_fail = false;
+        for(var i = 1; i<=1534; i++)
+        {
+        	console.log("update : "+ i);
+            if(is_fail)
+                break;
+            query.equalTo("voteHouseId", i);
+            query.find({    
+                success: function(results) 
+                {
+                    if(results.length > 0)
+                    {
+                        var found_object = results[0];
+                        var temp1 = 0;
+                        var temp2 = 0;
+                        if(msg != null)
+                        {
+                            temp1 = parseInt(Math.random()*10000);
+                            temp2 = parseInt(Math.random()*10000);
+                        }
+
+                        found_object.set("candidate7", temp1);
+                        found_object.set("candidate6", temp2);
+
+                        found_object.save(null, {
+                            success: function(obj) 
+                            {
+                            },
+                            error: function(model, error) 
+                            {
+                                is_fail = true;
+                            }
+                        });
+                    }
+                },
+                error: function() 
+                {
+                    is_fail = true;
+                }
+            });
+            sleep(150);
+        }
+        if(is_fail)
+        	showAlert("更新失敗");
+        else
+        	showAlert("更新成功");
+    };
+
+	var onBtnUpdateClick = function (e)
+	{
+		ResetTable("update");
+	}
+
+	var onBtnClearClick = function (e)
+	{
+		ResetTable();
+	}
+
+	var showAlert = function (msg)
+	{
+		$("#popupDialog #popupText").html(msg);
+		$("#popupDialog").popup( "open" );
+	}
+
+	// Parse.com 30 request/sec
+	function sleep(milliseconds) 
+	{
+  		var start = new Date().getTime();
+  		for (var i = 0; i < 1e7; i++) 
+  		{
+    		if ((new Date().getTime() - start) > milliseconds)
+    		{
+      			break;
+    		}
+  		}
+	}
+
+	$("#btn_update").on("click",onBtnUpdateClick);
+	$("#btn_clean").on("click",onBtnClearClick);
+});
+
+
 	var onCreateTable = function (e)
 	{
 		var VoteHouseObject = Parse.Object.extend("TicketInfoObject");
@@ -73,53 +164,4 @@
 		}
 	}
 
-	var ResetTable = function(msg) 
-    {
-    	var TicketInfoObject = Parse.Object.extend("TicketInfoObject");	
-        var query = new Parse.Query(TicketInfoObject);
-        var is_fail = false;
-        for(var i = 1; i<=1534; i++)
-        {
-            if(is_fail)
-                break;
-            query.equalTo("voteHouseId", i);
-            query.find({    
-                success: function(results) 
-                {
-                    if(results.length > 0)
-                    {
-                        var found_object = results[0];
-                        var temp1 = 0;
-                        var temp2 = 0;
-                        if(msg != null)
-                        {
-                            temp1 = parseInt(Math.random()*10000);
-                            temp2 = parseInt(Math.random()*10000);
-                        }
-
-                        found_object.set("candidate7", temp1);
-                        found_object.set("candidate6", temp2);
-
-                        found_object.save(null, {
-                            success: function(obj) 
-                            {
-                            },
-                            error: function(model, error) 
-                            {
-                                is_fail = true;
-                            }
-                        });
-                    }
-                },
-                error: function() 
-                {
-                    is_fail = true;
-                }
-            });
-            sleep(100);
-        }
-        if(is_fail)
-        	showAlert("更新失敗");
-        else
-        	showAlert("更新成功");
-    }
+	
