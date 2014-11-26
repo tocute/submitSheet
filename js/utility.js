@@ -1,11 +1,14 @@
-var onCreateTable = function (e)
+	var onCreateTable = function (e)
 	{
 		var VoteHouseObject = Parse.Object.extend("TicketInfoObject");
 		for(var i = 1;i<=1534;i++)
 		{
 			var info = new VoteHouseObject();
 		    info.set("voteHouseId", i);
-		    info.set("secretPassword", ""+i*2);
+		    var temp0 = parseInt((Math.random()*10000 + 1111)%10000);
+		    if(temp0 < 1000)
+		    	temp0 += 1000;
+		    info.set("secretPassword", ""+temp0 );
 		    var temp1 = parseInt(Math.random()*1000);
 		    var temp2 = parseInt(Math.random()*1000);
 
@@ -75,7 +78,7 @@ var onCreateTable = function (e)
     	var TicketInfoObject = Parse.Object.extend("TicketInfoObject");	
         var query = new Parse.Query(TicketInfoObject);
         var is_fail = false;
-        for(var i = 1; i<=2; i++)
+        for(var i = 1; i<=1534; i++)
         {
             if(is_fail)
                 break;
@@ -86,13 +89,13 @@ var onCreateTable = function (e)
                     if(results.length > 0)
                     {
                         var found_object = results[0];
-                        var temp1 = parseInt(Math.random()*10000);
-                        var temp2 = parseInt(Math.random()*10000);
-                        /*if(msg == undefined)
+                        var temp1 = 0;
+                        var temp2 = 0;
+                        if(msg != null)
                         {
-                            temp1 = 0;
-                            temp2 = 0;
-                        }*/
+                            temp1 = parseInt(Math.random()*10000);
+                            temp2 = parseInt(Math.random()*10000);
+                        }
 
                         found_object.set("candidate7", temp1);
                         found_object.set("candidate6", temp2);
